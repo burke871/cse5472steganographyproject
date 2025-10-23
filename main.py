@@ -1,5 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QPixmap
+import os
 from ui_main import Ui_MainWindow
 
 class StegoApp(QMainWindow):
@@ -15,7 +18,25 @@ class StegoApp(QMainWindow):
         self.ui.saveImageButton.clicked.connect(self.save_image)
 
     def load_image(self):
-        print("Load image clicked")
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Image",
+            "",
+            "Image Files (*.png *.jpg *.jpeg *.bmp)"
+        )
+        if file_path:
+            # Store file path if you’ll need it later
+            self.image_path = file_path
+
+            # Show image preview
+            pixmap = QPixmap(file_path)
+            pixmap = pixmap.scaled(
+                self.ui.imageLabel.width(),
+                self.ui.imageLabel.height()
+            )
+            self.ui.imageLabel.setPixmap(pixmap)
+            self.ui.imageLabel.setStyleSheet("")  # Remove placeholder border
+            print(f"Loaded image: {os.path.basename(file_path)}")
 
     def encode_message(self):
         print("Encode clicked")
